@@ -1,0 +1,4 @@
+libgz-math7-dev
+libgz-msgs10-dev
+libgz-transport13-dev
+locales

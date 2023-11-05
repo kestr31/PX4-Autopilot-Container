@@ -1,0 +1,15 @@
+	# set local coordinate frame reference
+    # https://github.com/PX4/PX4-Autopilot/pull/21931/commits/18334b8bf13dcb4575d2674ea497a4cf663b33e6
+	if [ -n "${PX4_HOME_LAT}" ]; then
+		param set SIM_GZ_HOME_LAT ${PX4_HOME_LAT}
+	fi
+
+	if [ -n "${PX4_HOME_LON}" ]; then
+		param set SIM_GZ_HOME_LON ${PX4_HOME_LON}
+	fi
+
+	if [ -n "${PX4_HOME_ALT}" ]; then
+		param set SIM_GZ_HOME_ALT ${PX4_HOME_LON}
+	fi
+
+	

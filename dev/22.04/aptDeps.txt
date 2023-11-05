@@ -1,0 +1,16 @@
+bat
+ca-certificates
+curl
+git
+gnupg
+libgz-math7-dev
+libgz-msgs10-dev
+libgz-transport13-dev
+lsb-core
+lsb-release
+mesa-utils
+mesa-vulkan-drivers
+neovim
+sudo
+wget
+zsh
