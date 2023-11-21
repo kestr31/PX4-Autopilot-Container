@@ -151,13 +151,13 @@ RUN \
                 /home/user/PX4-Autopilot/src/modules/simulation/gz_bridge/GZMixingInterfaceESC.hpp \
             && make -C /home/user/PX4-Autopilot px4_sitl; \
         elif [[ "x${BASETAG}" == "x20.04" ]]; then \
-            temp=$(echo "$(cat /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.sh)") \
-            && cp /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.sh \
+            cp /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.sh \
                 /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.bak \
             && echo 'echo "THERE IS NOTHING."' > /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.sh \
             && make -C /home/user/PX4-Autopilot px4_sitl gazebo-classic \
             && mv /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.bak \
-                /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.sh; \
+                /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.sh \
+            && rm -rf /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.bak; \
         else \
             echo "IMAGE MUST BE BASED ON UBUNTU 20.04 OR 22.04" \
             && exit 1; \

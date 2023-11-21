@@ -35,6 +35,11 @@ fi
 ## CASE A-1. gazebo SIMULATION
 if [ "${SITL_TYPE}" = "gazebo" ]; then
 
+    if [[ "${REBUILD}" -eq "1" ]]; then
+        echo "INFO [SITL] REBUILDING PX4-AUTOPILOT"
+        make -C /home/user/PX4-Autopilot px4_sitl
+    fi
+
     ## A-1. CHECK IF PREVIOUS BUILD EXISTS OR NOT
     ### CASE A-1-1. PREVIOUS BUILD EXISTS
     if [ -d "${PX4_SRC_DIR}/build" ]; then
@@ -62,6 +67,31 @@ if [ "${SITL_TYPE}" = "gazebo" ]; then
 
 ## CASE A-2. gazebo-classic SIMULATION [ERROR]
 elif [ "${SITL_TYPE}" = "gazebo-classic" ]; then
+
+    if [[ "${REBUILD}" -eq "1" ]]; then
+        echo "INFO [SITL] REBUILDING PX4-AUTOPILOT"
+        make -C /home/user/PX4-Autopilot distclean
+        cp /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.sh \
+            /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.bak
+        echo 'echo "THERE IS NOTHING."' > /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.sh
+        make -C /home/user/PX4-Autopilot px4_sitl gazebo-classic
+        mv /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.bak \
+            /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.sh; \
+        rm -rf /home/user/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_run.bak
+
+        if [ ! -z "${QGC_IP}" ]; then 
+            sed -i "s/-x -u \$udp_gcs_port_local/-x -t ${QGC_IP} -u \$udp_gcs_port_local/g" \
+                ${PX4_SRC_DIR}/build/px4_sitl_default/etc/init.d-posix/px4-rc.mavlink
+        fi
+
+        ## DESIGNATE ROS2 UXRCE AGENT IP TO ALLOW COMMUNICATE ROS2 TOPIC
+        if [ ! -z "${ROS2_UXRCE_IP}" ]; then
+            sed -i "s/-h 127.0.0.1/-h ${ROS2_UXRCE_IP}/g" \
+                ${PX4_SRC_DIR}/build/px4_sitl_default/etc/init.d-posix/rcS
+            export UXRCE_DDS_AG_IP=$(python3 ${PX4_SRC_DIR}/Tools/convert_ip.py ${ROS2_UXRCE_IP})
+        fi
+
+    fi
 
     COMMENT_START=$(grep -wn 'if [ "\$debugger" == "lldb" ]; then' ${PX4_SRC_DIR}/Tools/simulation/gazebo-classic/sitl_run.sh | cut -d: -f1)
     COMMENT_END=$(grep -wn 'kill -9 \$SIM_PID' ${PX4_SRC_DIR}/Tools/simulation/gazebo-classic/sitl_run.sh | cut -d: -f1)

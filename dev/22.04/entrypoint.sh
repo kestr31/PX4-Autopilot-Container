@@ -1,7 +1,7 @@
 #! /bin/bash
 
 debug_message() {
-    echo "
+    echo -e "\033[35m
         ____  __________  __  ________   __  _______  ____  ______
        / __ \/ ____/ __ )/ / / / ____/  /  |/  / __ \/ __ \/ ____/
       / / / / __/ / __  / / / / / __   / /|_/ / / / / / / / __/   
@@ -9,13 +9,11 @@ debug_message() {
     /_____/_____/_____/\____/\____/  /_/  /_/\____/_____/_____/   
     
     "
-    echo "INFO [SITL] DEBUG_MODE IS SET. NOTHING WILL RUN"
+    echo -e "\033[35mINFO\t[PX4]\tDEBUG_MODE IS SET. NOTHING WILL RUN"
 }
-
 
 # DIRECTORY TO PX4-AutoPilot SOURCE
 PX4_SRC_DIR=/home/user/PX4-Autopilot
-
 
 ## DESIGNATE QGC ADDRESS TO ALLOW BROADCASTING MAVLINK SIGNAL
 if [ ! -z "${QGC_IP}" ]; then 
@@ -31,22 +29,26 @@ if [ ! -z "${ROS2_UXRCE_IP}" ]; then
 fi
 
 
-
 # A. INITIALIZATION SCRIPT MODIFIER
 ## CASE A-1. gazebo SIMULATION
 if [ "${SITL_TYPE}" = "gazebo" ]; then
+
+    if [[ "${REBUILD}" -eq "1" ]]; then
+        echo "INFO [SITL] REBUILDING PX4-AUTOPILOT"
+        make -C /home/user/PX4-Autopilot px4_sitl
+    fi
 
     ## A-1. CHECK IF PREVIOUS BUILD EXISTS OR NOT
     ### CASE A-1-1. PREVIOUS BUILD EXISTS
     if [ -d "${PX4_SRC_DIR}/build" ]; then
 
-        echo "INFO [SITL] PREVIOUS BUILD EXISTS!"
+        echo -e "\033[32mINFO\t[SITL]\tPREVIOUS BUILD EXISTS."
         SITL_rcS_DIR=${PX4_SRC_DIR}/build/px4_sitl_default/etc/init.d-posix
 
     ### CASE A-1-2. NOTHING WAS BUILD BEFORE
     else
 
-        echo "INFO [SITL] NO BUILD EXISTS!"
+        echo -e "\033[31mINFO\t[SITL]\tPREVIOUS BUILD DOES NOT EXIST."
         SITL_rcS_DIR=${PX4_SRC_DIR}/ROMFS/px4fmu_common/init.d-posix
 
     fi
