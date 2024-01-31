@@ -1,5 +1,11 @@
 # CONTAINERIZED PX4 FLIGHT SOFTWARE FOR PX4 SITL
 
+## 1/31 jociiiii Changing list/
+1. fixed pip emty update issue 
+2. added hardcording 
+> PX4-Autopilot/src/modules/uxrce_dds_client 
+> VehicleAngularVelocity msg
+
 ## 0. OVERVIEW
 
 - Further documentation will be done.
