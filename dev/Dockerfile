@@ -133,7 +133,15 @@ RUN \
     && PX4-Autopilot/Tools/setup/ubuntu.sh --no-nuttx --no-sim-tools \
     && sudo apt-get autoremove -y \
     && sudo apt-get clean autoclean \
-    && sudo rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
+    && sudo rm -rf /var/cache/apt/archives /var/lib/apt/lists/* \
+    # EMPY UPDATE, NOVEMBER 30.
+    && pip uninstall em \
+    && pip install empy==3.3.4
+
+RUN \
+    cd /home/user/PX4-Autopilot/src/modules/uxrce_dds_client && \
+    sed -i '23s%.*%  - topic: /fmu/out/vehicle_angular_velocity%g' dds_topics.yaml  && \
+    sed -i '24s%.*%    type: px4_msgs::msg::VehicleAngularVelocity%g' dds_topics.yaml 
 
 # COPY PATCH FILE TO FIX HOME LLA SETTING ISSUE
 COPY --chown=user:user fixes/fixHomeLLASet /tmp/fixHomeLLASet
@@ -178,12 +186,12 @@ CMD [ "/usr/local/bin/entrypoint.sh" ]
 # DOCKER_BUILDKIT=1 docker build \
 # --build-arg BASEIMAGE=ubuntu \
 # --build-arg BASETAG=20.04 \
-# -t kestr3l/px4:dev-1.14.0-focal \
+# -t jociiiii/px4:dev-1.14.0-focal-0.0.1 \
 # -f ./Dockerfile .
 
 # ------ BUILD COMMAND(JAMMY) ------
 # DOCKER_BUILDKIT=1 docker build \
 # --build-arg BASEIMAGE=ubuntu \
 # --build-arg BASETAG=22.04 \
-# -t kestr3l/px4:dev-1.14.0-jammy \
+# -t jociiiii/px4:dev-1.14.0-jammy-0.0.1 \
 # -f ./Dockerfile .
